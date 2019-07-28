@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+CROSS_COMPILER_IMAGE_NAME=windows-static-x64
+
+# Fix for build_starter script
+cd $(dirname $0)
+
+if [ ! -f ./dockcross ]; then
+  echo "Creating dockcross script!"
+
+  docker run --rm dockcross/$CROSS_COMPILER_IMAGE_NAME > ./dockcross_pre
+
+  # Fixing a platform error see Readme for details
+  awk '!/HOST_PWD=\$\{HOST_PWD\/\\/ {print $0}' dockcross_pre > ./dockcross
+
+  echo "Done creating dockcross script!"
+else
+  echo "Skipped creating dockcross script, since it already exists!"
+fi
+
+cd googletest
+# In order to display all cmake vars use 'cmake -LAH'
+
+.././dockcross cmake -Bbuild -H. '-GUnix Makefiles' \
+      -Dgtest_build_samples=ON \
+      -Dgtest_build_tests=ON \
+      -Dgmock_build_tests=ON \
+      -Dcxx_no_exception=OFF \
+      -Dcxx_no_rtti=OFF \
+      -DCMAKE_COMPILER_IS_GNUCXX=OFF
+
+.././dockcross make -Cbuild -i
+
+cd ..
+
+echo "Successfully terminated build.sh script!!"
