@@ -35,5 +35,26 @@ docker run \
 ```
 2. Configure the Jenkins host according to post installation [manual](https://jenkins.io/doc/book/installing#setup-wizard).
 
+<i>Dockercross error note</i>
+The following section show an error which occurred on my machine, trying to run dockcross. It looks like there is a path formation error going on my machine.
+
+```
+$ ./dockcross cmake -h
+C:\Program Files\Docker Toolbox\docker.exe: Error response from daemon: invalid mode: /work.
+See 'C:\Program Files\Docker Toolbox\docker.exe run --help'.
+Error response from daemon: No such container: dockcross_32348
+```
+I tracked down the error to lines 199 and 200 of the `dockercross` file.
+
+```
+199 HOST_PWD=${HOST_PWD/\//}
+200 HOST_PWD=${HOST_PWD/\//:\/}
+```
+Those two lines cause a path error, the following lines shows the arguments of the `docker run` command. Showing that the work path is not formatted correctly, the path should be starting with `/e/080_Github...`.
+
+```
+--name dockcross_17497 -v e:/080_Github/CI-with-jenkins-and-docker-for-cpp:/work dockcross/windows-static-x64:latest cmake -h
+```
+
 ## Contributing
 To get started with contributing to my GitHub repository, please contact me [Slack](https://join.slack.com/t/napi-friends/shared_invite/enQtNDg3OTg5NDc1NzUxLWU1MWNhNmY3ZTVmY2FkMDM1ODg1MWNlMDIyYTk1OTg4OThhYzgyNDc3ZmE5NzM1ZTM2ZDQwZGI0ZjU2M2JlNDU).
