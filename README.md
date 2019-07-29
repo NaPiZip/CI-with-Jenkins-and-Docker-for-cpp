@@ -26,7 +26,7 @@ This is a tutorial showing how to use Jenkins and Docker Toolbox on a Windows ma
 
 <h2>Installation</h2>
 The following programs are needed:<br>
-1. Git
+1. Git<br>
 2. Docker Toolbox for Windows
 
 ## How to get the Jenkins host up and running
