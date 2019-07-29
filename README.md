@@ -46,7 +46,7 @@ docker run \
 ```
 2. Configure the Jenkins host according to post installation [manual](https://jenkins.io/doc/book/installing#setup-wizard).
 
-<i>Dockercross error note</i>
+<i>Dockercross error note</i><br>
 The following section show an error which occurred on my machine, trying to run dockcross. It looks like there is a path formation error going on my machine.
 
 ```
