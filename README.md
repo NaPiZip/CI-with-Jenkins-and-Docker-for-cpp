@@ -29,6 +29,10 @@ The following programs are needed:<br>
 1. Git<br>
 2. Docker Toolbox for Windows
 
+<h2>Communication diagram</h2>
+Image showing how docker, dockcross and Jenkis communicate.
+
+
 ## How to get the Jenkins host up and running
 This section describes how to set up a "local" Jenkins host, the process is pretty straight forward, assuming Docker is already up and running on the local machine.
 
@@ -66,6 +70,9 @@ Those two lines cause a path error, the following lines shows the arguments of t
 ```
 --name dockcross_17497 -v e:/080_Github/CI-with-jenkins-and-docker-for-cpp:/work dockcross/windows-static-x64:latest cmake -h
 ```
+
+<h2>What is Dockcross and how to use it</h2>
+<h2>Creating a custom dockcross container</H2>
 
 ## Contributing
 To get started with contributing to my GitHub repository, please contact me [Slack](https://join.slack.com/t/napi-friends/shared_invite/enQtNDg3OTg5NDc1NzUxLWU1MWNhNmY3ZTVmY2FkMDM1ODg1MWNlMDIyYTk1OTg4OThhYzgyNDc3ZmE5NzM1ZTM2ZDQwZGI0ZjU2M2JlNDU).
