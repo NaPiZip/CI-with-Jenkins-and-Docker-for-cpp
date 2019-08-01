@@ -168,10 +168,11 @@ public:
       }
     }
 
-  for(auto i = 0; i< nVertices; i++)
+  for(unsigned int i = 0; i< nVertices; i++)
   {
     std::cout << "Vertex: " << i << " Parent: " << parent[i] << " Distance: " << distance[i] << std::endl;
   }
+  return 0;
 }
 
 };
