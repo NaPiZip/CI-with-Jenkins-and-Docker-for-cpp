@@ -23,13 +23,12 @@ file(GLOB project_SRC
 
 add_executable(${EXE_NAME} ${project_SRC})
 target_link_libraries(${EXE_NAME} gtest gmock)
-
 # tell CMake to use CTest extension
 enable_testing()
 
 
 add_test(NAME RunnerTest
-        COMMAND ${EXE_NAME}.exe)
+COMMAND ./${EXE_NAME}.exe)
 #[[
 Note:
 The following command is used to list all cmake vars
