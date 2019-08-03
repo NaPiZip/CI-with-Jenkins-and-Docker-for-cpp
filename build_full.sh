@@ -19,19 +19,8 @@ else
   echo "Skipped creating dockcross script, since it already exists!"
 fi
 
-cd googletest
-# In order to display all cmake vars use 'cmake -LAH'
-
-.././dockcross cmake -Bbuild -H. '-GUnix Makefiles' \
-      -Dgtest_build_samples=ON \
-      -Dgtest_build_tests=ON \
-      -Dgmock_build_tests=ON \
-      -Dcxx_no_exception=OFF \
-      -Dcxx_no_rtti=OFF \
-      -DCMAKE_COMPILER_IS_GNUCXX=OFF
-
-.././dockcross make -Cbuild -i
-
-cd ..
+./dockcross cmake -H. -Bbuild "-GUnix Makefiles"
+./dockcross make -Cbuild
+./dockcross make test -Cbuild
 
 echo "Successfully terminated build.sh script!!"
