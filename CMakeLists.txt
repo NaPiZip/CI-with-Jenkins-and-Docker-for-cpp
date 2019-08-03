@@ -4,9 +4,11 @@ set(EXE_NAME "Runner")
 
 project("Example" LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -std=c++14")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "/W4 /WX /EHsc")
 endif()
@@ -23,12 +25,15 @@ file(GLOB project_SRC
 
 add_executable(${EXE_NAME} ${project_SRC})
 target_link_libraries(${EXE_NAME} gtest gmock)
-# tell CMake to use CTest extension
-enable_testing()
 
+# tell CMake to use CTest extension only if Cmake version is 3.10 or more
+if (CMAKE_VERSION VERSION_GREATER 3.9)
+  cmake_policy(SET CMP0057 NEW)
+  enable_testing()
+  include(GoogleTest)
+  gtest_add_tests(${EXE_NAME} ".noArgs" AUTO)
+endif()
 
-add_test(NAME RunnerTest
-COMMAND ./${EXE_NAME}.exe)
 #[[
 Note:
 The following command is used to list all cmake vars
