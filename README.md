@@ -18,23 +18,27 @@
 
 </div>
 
-This is a tutorial showing how to use Jenkins and Docker Toolbox on a Windows machine in order to set up a Continuous Integration system for C/C++. The central part is the Docker Toolbox which is used in order to run the Jenkins host as well as to run a Docker container with a compiler in order to compile C/C++ source code. The main goal is to install as little software as possible, such that the coupling between tools is as minimal as needed. This means after installing the Docker Toolbox and cloning the Git repo, there should be no additional software needed in order to develop C/C++ code. To summarize the goals:
+This is a tutorial showing how to use Jenkins and Docker Toolbox on a Windows machine in order to set up a Continuous Integration system for C/C++. The central part is the Docker Toolbox which is used in order to run the Jenkins host, as well as to run a Docker container with a compiler image for compiling C/C++ source code, the container image is called Dockcross .Dockercross is a cross compiling toolchains in Docker, which utilizes Docker images in order to compile executables for all kinds of platforms a link can be found [here](https://github.com/dockcross/dockcross).
+
+
+The main goal is to install as little software as possible, such that the coupling between tools is as minimal as needed. This means after installing the Docker Toolbox and cloning the Git repo, there should be no additional software needed in order to develop C/C++ code. To summarize the goals:
 - Create a CI build environment with as little tool coupling.
 - Should support automated testing after each code commit.
 - The Git repo should be self containing.
 -  There should be the possibility of extension of the toolchain.
 
-<h2>Installation</h2>
+## Installation
 The following programs are needed:<br>
 1. Git<br>
-2. Docker Toolbox for Windows
+2. Docker Toolbox for Windows<br>
+3. Jenkis Docker images<br>
+4. Dockcross Docker image<br>
 
-<h2>Communication diagram</h2>
+## Communication diagram
 Image showing how docker, dockcross and Jenkis communicate.
 
-
-## How to get the Jenkins host up and running
-This section describes how to set up a "local" Jenkins host, the process is pretty straight forward, assuming Docker is already up and running on the local machine.
+## Tutorial
+This section describes how to set up a "local" Jenkins host which is triggered by changes of the git repository, then builds the executables and runs all the defined tests.
 
 1. Run the Jenkins docker image:
 ```
@@ -50,7 +54,7 @@ docker run \
 ```
 2. Configure the Jenkins host according to post installation [manual](https://jenkins.io/doc/book/installing#setup-wizard).
 
-<i>Dockercross error note</i><br>
+<b>Dockercross error note</b><br>
 The following section show an error which occurred on my machine, trying to run dockcross. It looks like there is a path formation error going on my machine.
 
 ```
@@ -71,8 +75,8 @@ Those two lines cause a path error, the following lines shows the arguments of t
 --name dockcross_17497 -v e:/080_Github/CI-with-jenkins-and-docker-for-cpp:/work dockcross/windows-static-x64:latest cmake -h
 ```
 
-<h2>What is Dockcross and how to use it</h2>
-<h2>Creating a custom dockcross container</H2>
+
+## Creating a custom dockcross container
 
 ## Contributing
 To get started with contributing to my GitHub repository, please contact me [Slack](https://join.slack.com/t/napi-friends/shared_invite/enQtNDg3OTg5NDc1NzUxLWU1MWNhNmY3ZTVmY2FkMDM1ODg1MWNlMDIyYTk1OTg4OThhYzgyNDc3ZmE5NzM1ZTM2ZDQwZGI0ZjU2M2JlNDU).
