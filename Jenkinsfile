@@ -1,10 +1,14 @@
 pipeline {
     agent any
     stages {
-        stage('Stage 1') {
+        stage('preprocessing') {
             steps {
-                echo 'Hello world!'
-                ls -a
+                echo "Preprocessing"
+            }
+        }
+        stage('build') {
+            steps {
+                sh "./build_full.sh"
             }
         }
     }
