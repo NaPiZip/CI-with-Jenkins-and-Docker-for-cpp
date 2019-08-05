@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 CROSS_COMPILER_IMAGE_NAME=windows-static-x64
 
