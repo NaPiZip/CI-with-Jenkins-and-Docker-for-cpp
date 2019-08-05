@@ -13,7 +13,7 @@ if [ ! -f ./dockcross ]; then
   # Fixing a platform error see Readme for details
   awk '!/HOST_PWD=\$\{HOST_PWD\/\\/ {print $0}' dockcross_pre > ./dockcross
   rm dockcross_pre
-
+  chmod +x ./dockcross
   echo "Done creating dockcross script!"
 else
   echo "Skipped creating dockcross script, since it already exists!"
