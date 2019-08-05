@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 cd googletest
 # In order to display all cmake vars use 'cmake -LAH'
