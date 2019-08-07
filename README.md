@@ -75,6 +75,8 @@ Those two lines cause a path error, the following lines shows the arguments of t
 --name dockcross_17497 -v e:/080_Github/CI-with-jenkins-and-docker-for-cpp:/work dockcross/windows-static-x64:latest cmake -h
 ```
 
+Resolving the access error in Jenkins<br>
+[This element needs more time explore.](https://github.com/jenkinsci/docker#installing-more-tools)
 
 ## Creating a custom dockcross container
 
