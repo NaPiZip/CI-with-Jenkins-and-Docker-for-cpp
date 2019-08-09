@@ -1,3 +1,6 @@
 [submodule "googletest"]
 	path = googletest
 	url = https://github.com/google/googletest.git
+[submodule "dockcross"]
+	path = dockcross
+	url = https://github.com/dockcross/dockcross.git
