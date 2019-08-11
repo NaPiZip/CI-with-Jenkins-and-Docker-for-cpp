@@ -11,16 +11,16 @@ if [ ! -f ./dockcross ]; then
   docker run --rm dockcross/$CROSS_COMPILER_IMAGE_NAME > ./dockcross_pre
 
   # Fixing a platform error see Readme for details
-  awk '!/HOST_PWD=\$\{HOST_PWD\/\\/ {print $0}' dockcross_pre > ./dockcross
+  awk '!/HOST_PWD=\$\{HOST_PWD\/\\/ {print $0}' dockcross_pre > ./dockcross_sh
   #rm dockcross_pre
-  chmod +x ./dockcross
+  chmod +x ./dockcross_sh
   echo "Done creating dockcross script!"
 else
   echo "Skipped creating dockcross script, since it already exists!"
 fi
 
-./dockcross cmake -H. -Bbuild "-GUnix Makefiles"
-./dockcross make -Cbuild
-./dockcross make test -Cbuild
+./dockcross_sh cmake -H. -Bbuild "-GUnix Makefiles"
+./dockcross_sh make -Cbuild
+./dockcross_sh make test -Cbuild
 
 echo "Successfully terminated build.sh script!!"
