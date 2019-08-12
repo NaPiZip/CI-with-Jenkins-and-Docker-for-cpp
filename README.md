@@ -78,6 +78,23 @@ Those two lines cause a path error, the following lines shows the arguments of t
 Resolving the access error in Jenkins<br>
 [This element needs more time explore.](https://github.com/jenkinsci/docker#installing-more-tools)
 
+<b>Dockercross error note second</b><br>
+The following error occurred during the build in jenkins, due to the issue of running dockcross on Docker Toolbox within a Unix container.
+```
+bash-4.4# ./dockcross_pre cmake --help
+cp: target '/home/root/' is not a directory
+chown: cannot access '/home/root': No such file or directory
+```
+
+Debugging showed the following `docker run` arguments get passed:<br>
+```
+-ti --name dockcross_12203 -v /home:/work -e BUILDER_UID=0 -e BUILDER_GID=0 -e BUILDER_USER=root -e BUILDER_GROUP=root dockcross/windows-static-x64:latest cmake --help
+```
+Under Windows the correct commands look like that:<br>
+```
+--name dockcross_5263 -v e:/080_Github/CI-with-jenkins-and-docker-for-cpp:/work dockcross/windows-static-x64:latest cmake --help
+```
+
 ## Creating a custom dockcross container
 
 ## Contributing
