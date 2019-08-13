@@ -18,13 +18,13 @@ if [ ! -f ./dockcross ]; then
   if [ -z "$DOCKER_TOOLBOX_INSTALL_PATH" -a -n "$LINUX" ]; then
     echo "Target is LINUX"
     # Fixing platform error for Docker inside the VM
-    awk '!/USER_IDS=\(-e BUILDER_UID/ {print $0}' dockcross_pre > ./dockcross_sh
+     awk '/USER_IDS=\(-e BUILDER_UID/ {print "echo Replaced";next}1' dockcross_pre > ./dockcross_sh
+
   elif [ -n "$MSYS" ]; then
     echo "Target is MSYS"
     # Fixing a platform error on MSYS see Readme for details
     awk '!/HOST_PWD=\$\{HOST_PWD\/\\/ {print $0}' dockcross_pre > ./dockcross_sh
   fi
-
   rm dockcross_pre
   chmod +x ./dockcross_sh
   echo "Done creating dockcross script!"
@@ -32,6 +32,7 @@ else
   echo "Skipped creating dockcross script, since it already exists!"
 fi
 
+./dockcross_sh ls
 #./dockcross_sh cmake -H. -Bbuild "-GUnix Makefiles"
 #./dockcross_sh make -Cbuild
 #./dockcross_sh make test -Cbuild
