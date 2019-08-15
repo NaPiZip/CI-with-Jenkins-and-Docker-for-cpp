@@ -25,6 +25,18 @@ if [ ! -f ./dockcross ]; then
     # Fixing a platform error on MSYS see Readme for details
     awk '!/HOST_PWD=\$\{HOST_PWD\/\\/ {print $0}' dockcross_pre > ./dockcross_sh
   fi
+
+  if [[ true ]]; then
+    echo "Debugging"
+    awk '/docker run \$/ {print "echo \$TTY_ARGS --name \$CONTAINER_NAME \\\n -v \"$HOST_PWD\":\/work \\\n \$HOST_VOLUMES \\\n \"\$\{USER_IDS\[\@\]\}\" \\\n \$FINAL_ARGS \\\n \$FINAL_IMAGE \"\$\@\"";print;next}1' dockcross_sh > ./dockcross_debug
+
+    ./dockcross_debug cmake -H. -Bbuild "-GUnix Makefiles"
+
+    echo "Early terminating due to debugging"
+    exit
+  fi
+
+
   rm dockcross_pre
   chmod +x ./dockcross_sh
   echo "Done creating dockcross script!"
@@ -32,9 +44,8 @@ else
   echo "Skipped creating dockcross script, since it already exists!"
 fi
 
-./dockcross_sh ls
-#./dockcross_sh cmake -H. -Bbuild "-GUnix Makefiles"
-#./dockcross_sh make -Cbuild
-#./dockcross_sh make test -Cbuild
+./dockcross_sh cmake -H. -Bbuild "-GUnix Makefiles"
+./dockcross_sh make -Cbuild
+./dockcross_sh make test -Cbuild
 
 echo "Successfully terminated build.sh script!!"
