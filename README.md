@@ -52,6 +52,8 @@ docker run \
   -v /var/run/docker.sock:/var/run/docker.sock \
   jenkinsci/blueocean
 ```
+A detailed description of the Jenkins Docker image can be found [here](https://github.com/jenkinsci/docker/blob/master/README.md).
+
 2. Configure the Jenkins host according to post installation [manual](https://jenkins.io/doc/book/installing#setup-wizard).
 
 <b>Dockercross error note</b><br>
