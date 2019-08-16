@@ -19,8 +19,8 @@ INCLUDE_DIRECTORIES("googletest/googlemock/include")
 add_subdirectory(googletest)
 
 file(GLOB project_SRC
-    "project/*.h"
-    "project/*.cpp"
+    "src/*.h"
+    "src/*.cpp"
 )
 
 add_executable(${EXE_NAME} ${project_SRC})
