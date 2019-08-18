@@ -103,16 +103,10 @@ $ docker run \
 
 
 
-
 ## Pitfalls, errors and debugging
 
-
-Resolving the access error in Jenkins<br>
-[This element needs more time explore.](https://github.com/jenkinsci/docker#installing-more-tools)
-
-
-
-
+<b>Resolving the access error in Jenkins</b>
+[This element needs more time to explore.](https://github.com/jenkinsci/docker#installing-more-tools)
 
 <b>Dockercross error note</b><br>
 The following error occurred during the build in Jenkis, due to the issue of running Dockcross using the Docker Toolbox within a Unix container.
@@ -126,10 +120,9 @@ Debugging showed the following `docker run` arguments get passed:<br>
 ```
 -ti --name dockcross_12203 -v /home:/work -e BUILDER_UID=0 -e BUILDER_GID=0 -e BUILDER_USER=root -e BUILDER_GROUP=root dockcross/windows-static-x64:latest cmake --help
 ```
-Under Windows the correct commands look like that:<br>
-```
---name dockcross_5263 -v e:/080_Github/CI-with-jenkins-and-docker-for-cpp:/work dockcross/windows-static-x64:latest cmake --help
-```
+This issue took ma a while to resolve. The problem is that we are running Docker inside of a Docker container (the jenkins image build earlier). Docker does not allow you to mount local resources to other container unless you are using volumes, [here](https://stackoverflow.com/questions/23137544/how-to-map-volume-paths-using-dockers-volumes-from) is an example of using volumes between container.
+
+continue here -->
 
 ## Creating a custom dockcross container
 TBD.
