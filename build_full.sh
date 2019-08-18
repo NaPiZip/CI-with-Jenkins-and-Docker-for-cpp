@@ -1,41 +1,38 @@
 #!/bin/bash
+DEBUG=#true
 
 CROSS_COMPILER_IMAGE_NAME=windows-static-x64
+ADDITIONAL_ARGS="-l dc" #need default arg here it's only a lable
 
-# Fix for build_starter script
-cd $(dirname $0)
 
-if [ ! -f ./dockcross ]; then
+# Bash on Ubuntu
+LINUX=$(uname -o | awk '/Linux/ {print $0}')
+# MSYS, Git Bash, etc.
+MSYS=$(uname -o || awk '/Msys/ {print $0}')
+
+if [ ! -f ./dockcross_sh ]; then
   echo "Creating dockcross script!"
-
   docker run --rm dockcross/$CROSS_COMPILER_IMAGE_NAME > ./dockcross_pre
-
-  # Bash on Ubuntu
-  LINUX=$(uname -o || awk '/Msys/ {print $0}')
-  # MSYS, Git Bash, etc.
-  MSYS=$(uname -o || awk '/Msys/ {print $0}')
 
   if [ -z "$DOCKER_TOOLBOX_INSTALL_PATH" -a -n "$LINUX" ]; then
     echo "Target is LINUX"
     # Fixing platform error for Docker inside the VM
-     awk '/USER_IDS=\(-e BUILDER_UID/ {print "echo Replaced";next}1' dockcross_pre > ./dockcross_sh
-
+     awk '/USER_IDS=\(-e BUILDER_UID/ {print "echo ";next}1' dockcross_pre > ./dockcross_sh
   elif [ -n "$MSYS" ]; then
     echo "Target is MSYS"
     # Fixing a platform error on MSYS see Readme for details
     awk '!/HOST_PWD=\$\{HOST_PWD\/\\/ {print $0}' dockcross_pre > ./dockcross_sh
-  fi
-
-  if [[ true ]]; then
-    echo "Debugging"
-    awk '/docker run \$/ {print "echo \$TTY_ARGS --name \$CONTAINER_NAME \\\n -v \"$HOST_PWD\":\/work \\\n \$HOST_VOLUMES \\\n \"\$\{USER_IDS\[\@\]\}\" \\\n \$FINAL_ARGS \\\n \$FINAL_IMAGE \"\$\@\"";print;next}1' dockcross_sh > ./dockcross_debug
-
-    ./dockcross_debug cmake -H. -Bbuild "-GUnix Makefiles"
-
-    echo "Early terminating due to debugging"
+  else
+    echo "ERROR: Unsupported host!"
     exit
   fi
 
+  if [ -z $DEBUG ]; then
+    echo "Creating debug file"
+    # adding echo statment befor running the docker command and showing its arguments
+    awk '/docker run \$/ {print "echo $TTY_ARGS --name $CONTAINER_NAME \\\n -v \"$HOST_PWD\":/work \\\n $HOST_VOLUMES \\\n \"${USER_IDS[@]}\" \\\n $FINAL_ARGS \\\n $FINAL_IMAGE \"$@\"";print;next}1' dockcross_sh > ./dockcross_debug
+    chmod +x ./dockcross_debug
+  fi
 
   rm dockcross_pre
   chmod +x ./dockcross_sh
@@ -44,8 +41,22 @@ else
   echo "Skipped creating dockcross script, since it already exists!"
 fi
 
-./dockcross_sh cmake -H. -Bbuild "-GUnix Makefiles"
-./dockcross_sh make -Cbuild
-./dockcross_sh make test -Cbuild
+# Fixing de mmount issue inside a docker container
+if [ -z "$DOCKER_TOOLBOX_INSTALL_PATH" -a -n "$LINUX" ]; then
+  # Changing the workspace -w and adding the volume
+  CONTAINER_ID=$(cat /etc/hostname)
+  ADDITIONAL_ARGS="-w $PWD --volumes-from $CONTAINER_ID"
+fi
 
-echo "Successfully terminated build.sh script!!"
+
+if [ -z $DEBUG ]; then
+  echo "Running debug build script"
+  ./dockcross_debug -a "$ADDITIONAL_ARGS" cmake -H. -Bbuild "-GUnix Makefiles"
+else
+  echo "Running build script"
+  ./dockcross_sh -a "$ADDITIONAL_ARGS" cmake -H. -Bbuild "-GUnix Makefiles"
+  ./dockcross_sh -a "$ADDITIONAL_ARGS" make -Cbuild
+  ./dockcross_sh -a "$ADDITIONAL_ARGS" make test -Cbuild
+fi
+
+echo "Successfully terminated!!"
