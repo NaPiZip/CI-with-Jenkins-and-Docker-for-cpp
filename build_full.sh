@@ -27,7 +27,7 @@ if [ ! -f ./dockcross_sh ]; then
     exit
   fi
 
-  if [ -z $DEBUG ]; then
+  if [ $DEBUG == true ]; then
     echo "Creating debug file"
     # adding echo statment befor running the docker command and showing its arguments
     awk '/docker run \$/ {print "echo $TTY_ARGS --name $CONTAINER_NAME \\\n -v \"$HOST_PWD\":/work \\\n $HOST_VOLUMES \\\n \"${USER_IDS[@]}\" \\\n $FINAL_ARGS \\\n $FINAL_IMAGE \"$@\"";print;next}1' dockcross_sh > ./dockcross_debug
@@ -49,7 +49,7 @@ if [ -z "$DOCKER_TOOLBOX_INSTALL_PATH" -a -n "$LINUX" ]; then
 fi
 
 
-if [ -z $DEBUG ]; then
+if [ $DEBUG == true ]; then
   echo "Running debug build script"
   ./dockcross_debug -a "$ADDITIONAL_ARGS" cmake -H. -Bbuild "-GUnix Makefiles"
 else
