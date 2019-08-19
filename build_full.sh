@@ -2,7 +2,7 @@
 DEBUG=#true
 
 CROSS_COMPILER_IMAGE_NAME=windows-static-x64
-ADDITIONAL_ARGS="-l dc" #need default arg here it's only a lable
+ADDITIONAL_ARGS="-l dc" # Default arg here is only a label
 
 
 # Bash on Ubuntu
@@ -41,7 +41,7 @@ else
   echo "Skipped creating dockcross script, since it already exists!"
 fi
 
-# Fixing de mmount issue inside a docker container
+# Fixing the mount issue only if we are inside a docker container
 if [ -z "$DOCKER_TOOLBOX_INSTALL_PATH" -a -n "$LINUX" ]; then
   # Changing the workspace -w and adding the volume
   CONTAINER_ID=$(cat /etc/hostname)
