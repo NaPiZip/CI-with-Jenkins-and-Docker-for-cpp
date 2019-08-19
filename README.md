@@ -37,10 +37,13 @@ We will use the following Docker images:
 2. Jenkis images, [GitHub link](https://github.com/jenkinsci)<br>
 
 *Note:<br>
-We are using an adapted version of the Jenkins docker image, since we need to issue docker commands within Jenkins and due to the way Dockcross is working we cannot use the Jenkins docker plugins!*
+We are using an adapted version of the Jenkins Docker image, since we need to issue Docker commands within Jenkins and due to the way Dockcross is working we cannot use the Jenkins docker plugins!*
 
-## Communication diagram
-Image showing how docker, Dockcross and Jenkis communicate.
+## System Architecture
+The following image displays the system architecture, showing the host PC which is using the Docker Toolbox. The Docker Toolbox runs an image of a Jenkins container, the configuration on the Jenkins container clones the GitHub repository and constantly monitors it for changes. The Jenkin image then builds the source code and runs all unit tests.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp/master/images/Architecture.JPG" alt="Architecture"/></p>
 
 ## Tutorial
 This section describes how to set up a "local" Jenkins host which is triggered by changes of the git repository, then builds the executables and runs all the defined tests.
@@ -203,8 +206,7 @@ This section describes how to set up a "local" Jenkins host which is triggered b
   Which does the copying as well as changes of ownership. All the patches are found in `build_full.sh`.
 
 
-## Pitfalls, errors and debugging
-
+## Aditional errors and debugging
 If docker is causing a permission error:
 ```
 docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.26/containers/create: dial unix /var/run/docker.sock: connect: permission denied.
@@ -215,9 +217,8 @@ $ chmod 777 /var/run/docker.sock
 
 ```
 
-
 ## Creating a custom dockcross container
-TBD.
+TBD. Might be added.
 
 ## Contributing
 To get started with contributing to my GitHub repository, please contact me [Slack](https://join.slack.com/t/napi-friends/shared_invite/enQtNDg3OTg5NDc1NzUxLWU1MWNhNmY3ZTVmY2FkMDM1ODg1MWNlMDIyYTk1OTg4OThhYzgyNDc3ZmE5NzM1ZTM2ZDQwZGI0ZjU2M2JlNDU).
