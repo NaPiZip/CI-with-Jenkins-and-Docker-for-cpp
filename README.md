@@ -45,12 +45,12 @@ Image showing how docker, Dockcross and Jenkis communicate.
 ## Tutorial
 This section describes how to set up a "local" Jenkins host which is triggered by changes of the git repository, then builds the executables and runs all the defined tests.
 
-1. Make sure Dockcross is working on the system by running the following command(this is not necessarily needed since we are later running within a Docker container, but it helps in order to get familiar with the usage of Dockcross):
-```
-docker run --rm dockcross/windows-static-x64 > ./dockcross_sh
-```
-  *Dockcross issues*
-  The following section show an error which occurred on my host windows machine, trying to run `dockcross`. It looks like there is a path formatting error going on, when using Dockcross in MSYS on a Windows machine.
+1. Make sure Dockcross is working on the system by running the following command (this is not necessary, since we are later running within a Docker container, but it helps in order to get familiar with the usage of Dockcross):
+  ```
+  docker run --rm dockcross/windows-static-x64 > ./dockcross_sh
+  ```
+  <b>Dockcross issues</b>
+  The following section shows an error which occurred on my host windows machine, trying to run `dockcross`. It looks like there is a path formatting error going on, when using Dockcross in MSYS on a Windows machine.
 
   ```
   $ ./dockcross cmake -h
@@ -58,12 +58,12 @@ docker run --rm dockcross/windows-static-x64 > ./dockcross_sh
   See 'C:\Program Files\Docker Toolbox\docker.exe run --help'.
   Error response from daemon: No such container: dockcross_32348
   ```
-  Adding a little bit of `echo "..."` statements into the `dockcross` file showed that the following call `docker run` call was made by the script:
+  Adding a little bit of `echo "..."` statements into the `dockcross` file showed that the following `docker run` call was made by the script:
 
   ```
   $ docker run -ti --name dockcross_17497 -v e:/080_Github/CI-with-jenkins-and-docker-for-cpp:/work dockcross/windows-static-x64:latest cmake -h
   ```
-  The argument `-v e:/080...` is leading to an path error the correct formatting should look like:
+  The argument `-v e:/080...` is leading to an path error, the correct formatting should look like:
   ```
   /e/080_Github...
   ```
@@ -73,7 +73,7 @@ docker run --rm dockcross/windows-static-x64 > ./dockcross_sh
   199 HOST_PWD=${HOST_PWD/\//}
   200 HOST_PWD=${HOST_PWD/\//:\/}
   ```
-  Those two lines are responsible for the reformatting, removing them solved the issue.
+  Those two lines are responsible for the reformatting error, removing them solved the issue.
   ```
   $ ./dockcross_sh cmake -h
   == Using MXE wrapper: /usr/src/mxe/usr/bin/x86_64-w64-mingw32.static-cmake
@@ -82,47 +82,139 @@ docker run --rm dockcross/windows-static-x64 > ./dockcross_sh
   == Using MXE toolchain: /usr/src/mxe/usr/x86_64-w64-mingw32.static/share/cmake/mxe-conf.cmake
   ...
   ```
-3. Build the Jenkins Docker image, located under `/jenkins` by issuing the following command within the directory:
-```
-$ docker build . -t jenkins
-```
-4. Run the Jenkins docker image:
-```
-$ docker run \
-  -u jenkins \
-  --rm \
-  -d \
-  -p 8080:8080 \
-  -p 50000:50000 \
-  -v jenkins-data:/var/jenkins_home \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  jenkins
-```
-5. Configure the Jenkins host according to the [Post-installation setup wizard](https://jenkins.io/doc/book/installing#setup-wizard). The following plugins are important:
+2. Build the Jenkins Docker image, located under `/jenkins` by issuing the following command within the directory:
+  ```
+  $ docker build . -t jenkins
+  ```
+3. Run the Jenkins docker image:
+  ```
+  $ docker run \
+    -u jenkins \
+    --rm \
+    -d \
+    -p 8080:8080 \
+    -p 50000:50000 \
+    -v jenkins-data:/var/jenkins_home \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    jenkins
+  ```
+4. Configure the Jenkins host according to the [Post-installation setup wizard](https://jenkins.io/doc/book/installing#setup-wizard). The following plugins are important:
   - git:3.12.0
 
+5. Try running the `build_full.sh` script in within the Jenkins Docker image:
+  ```
+  $ docker run  -u jenkins  --rm  -d  -p 8080:8080  -p 50000:50000  -v jenkins-data:/var/jenkins_home  -v /var/run/docker
+  .sock:/var/run/docker.sock  -v /e/080_Github/CI-with-jenkins-and-docker-for-cpp/:/home jenkins
+  a38f21bbf08e925764960dc4bd02b57ca25f67c8709cec52047c86684999833f
+
+  $ docker exec -it a38f bash
+
+  jenkins@a38f21bbf08e:/$ cd home/
+
+  jenkins@a38f21bbf08e:/home$ ./build_full.sh
+  Creating dockcross script!
+  Target is LINUX
+  Done creating dockcross script!"
+  Running build script
+
+  == Using MXE wrapper: /usr/src/mxe/usr/bin/x86_64-w64-mingw32.static-cmake
+       - cmake version 3.10.0
+       - warnings for unused CMAKE_POLICY_DEFAULT variables can be ignored
+  == Using MXE toolchain: /usr/src/mxe/usr/x86_64-w64-mingw32.static/share/cmake/mxe-conf.cmake
+  == Using MXE runresult: /usr/src/mxe/usr/share/cmake/modules/TryRunResults.cmake
+
+  ...
+
+  100% tests passed, 0 tests failed out of 21
+
+  Total Test time (real) =  30.54 sec
+  make: Leaving directory '/home/build'
+  Successfully terminated!!
+  ```
+  <b>Dockcross issues</b>
+  The following error occurred during the build in Jenkins, due to the issue of running Dockcross using the Docker Toolbox within a Unix container.
+  ```
+  bash-4.4# ./dockcross cmake --help
+  cp: target '/home/root/' is not a directory
+  chown: cannot access '/home/root': No such file or directory
+  ```
+
+  Debugging showed the following `docker run` arguments get passed:<br>
+  ```
+  -ti --name dockcross_12203 -v /home:/work -e BUILDER_UID=0 -e BUILDER_GID=0 -e BUILDER_USER=root -e BUILDER_GROUP=root dockcross/windows-static-x64:latest cmake --help
+  ```
+  This issue took me a while to resolve. The problem is that we are running Docker inside of a Docker container (the jenkins image build earlier). Docker does not allow you to mount local resources to other container, this is the `-v /home:/work` argument in the call. For this purpose we should be using volumes, see [here](https://stackoverflow.com/questions/23137544/how-to-map-volume-paths-using-dockers-volumes-from) for an example of using volumes in order to share data between containers. Adding an additional argument during the call of Dockcross resolved that error (`build_full.sh`), this is only needed inside a Docker image.
+  ```
+  ...
+  ADDITIONAL_ARGS="-l dc" # Default arg here is only a label
+  ...
+  # Fixing the mount issue only if we are inside a docker container
+  if [ -z "$DOCKER_TOOLBOX_INSTALL_PATH" -a -n "$LINUX" ]; then
+    # Changing the workspace -w and adding the volume
+    CONTAINER_ID=$(cat /etc/hostname)
+    ADDITIONAL_ARGS="-w $PWD --volumes-from $CONTAINER_ID"
+  fi
+
+  ./dockcross_sh -a "$ADDITIONAL_ARGS" cmake -H. -Bbuild "-GUnix Makefiles"
+
+  ```
+  The default argument for `ADDITIONAL_ARGS` is only a label, this will do nothing in case we are not running on within a Docker container. It seems that call is now working:
+
+  ```
+  ./dockcross -a "-w /home --volumes-from a38f21bbf08e" cmake --help
+
+  cp: cannot create symbolic link '/home/jenkins/.wine/dosdevices/c:': Read-only file system
+  cp: cannot create symbolic link '/home/jenkins/.wine/dosdevices/z:': Read-only file system
+  cp: cannot create symbolic link '/home/jenkins/.wine/drive_c/users/root/My Pictures': Read-only file system
+  cp: cannot create symbolic link '/home/jenkins/.wine/drive_c/users/root/My Documents': Read-only file system
+  cp: cannot create symbolic link '/home/jenkins/.wine/drive_c/users/root/My Music': Read-only file system
+  cp: cannot create symbolic link '/home/jenkins/.wine/drive_c/users/root/My Videos': Read-only file system
+  == Using MXE wrapper: /usr/src/mxe/usr/bin/x86_64-w64-mingw32.static-cmake
+       - cmake version 3.10.0
+       - warnings for unused CMAKE_POLICY_DEFAULT variables can be ignored
+  ...
+  ```
+  But it looks like that Dockcross is trying to copy a lot of files which are read only. In order to fix that issue I removed the following section of the `dockcross` file, see the `build_full.sh`.
+  ```
+  if [ -z "$UBUNTU_ON_WINDOWS" -a -z "$MSYS" ]; then
+      USER_IDS=(-e BUILDER_UID="$( id -u )" -e BUILDER_GID="$( id -g )" -e BUILDER_USER="$( id -un )" -e BUILDER_GROUP="$( id -gn )")
+  fi
+  ```
+  This section adds arguments which get processed wit the `entrypont.sh` file of Dockcross:
+  ```
+  # If we are running docker natively, we want to create a user in the container
+  # with the same UID and GID as the user on the host machine, so that any files
+  # created are owned by that user. Without this they are all owned by root.
+  # The dockcross script sets the BUILDER_UID and BUILDER_GID vars.
+  If we are running docker natively, we want to create a user in the container
+  # with the same UID and GID as the user on the host machine, so that any files
+  # created are owned by that user. Without this they are all owned by root.
+  # The dockcross script sets the BUILDER_UID and BUILDER_GID vars.
+  if [[ -n $BUILDER_UID ]] && [[ -n $BUILDER_GID ]]; then
+
+     groupadd -o -g $BUILDER_GID $BUILDER_GROUP 2> /dev/null
+     useradd -o -m -g $BUILDER_GID -u $BUILDER_UID $BUILDER_USER 2> /dev/null
+     export HOME=/home/${BUILDER_USER}
+     shopt -s dotglob
+     cp -r /root/* $HOME/
+     chown -R $BUILDER_UID:$BUILDER_GID $HOME
+
+  ```
+  Which does the copying as well as changes of ownership. All the patches are found in `build_full.sh`.
 
 
 ## Pitfalls, errors and debugging
 
-<b>Resolving the access error in Jenkins</b>
-[This element needs more time to explore.](https://github.com/jenkinsci/docker#installing-more-tools)
+If docker is causing a permission error:
+```
+docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.26/containers/create: dial unix /var/run/docker.sock: connect: permission denied.
+```
+Then run the following command in the container:
+```
+$ chmod 777 /var/run/docker.sock
 
-<b>Dockercross error note</b><br>
-The following error occurred during the build in Jenkis, due to the issue of running Dockcross using the Docker Toolbox within a Unix container.
-```
-bash-4.4# ./dockcross_pre cmake --help
-cp: target '/home/root/' is not a directory
-chown: cannot access '/home/root': No such file or directory
 ```
 
-Debugging showed the following `docker run` arguments get passed:<br>
-```
--ti --name dockcross_12203 -v /home:/work -e BUILDER_UID=0 -e BUILDER_GID=0 -e BUILDER_USER=root -e BUILDER_GROUP=root dockcross/windows-static-x64:latest cmake --help
-```
-This issue took ma a while to resolve. The problem is that we are running Docker inside of a Docker container (the jenkins image build earlier). Docker does not allow you to mount local resources to other container unless you are using volumes, [here](https://stackoverflow.com/questions/23137544/how-to-map-volume-paths-using-dockers-volumes-from) is an example of using volumes between container.
-
-continue here -->
 
 ## Creating a custom dockcross container
 TBD.
