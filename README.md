@@ -49,7 +49,7 @@ This section describes how to set up a "local" Jenkins host which is triggered b
   ```
   docker run --rm dockcross/windows-static-x64 > ./dockcross_sh
   ```
-  <b>Dockcross issues</b>
+  <b>Dockcross issues</b><br>
   The following section shows an error which occurred on my host windows machine, trying to run `dockcross`. It looks like there is a path formatting error going on, when using Dockcross in MSYS on a Windows machine.
 
   ```
@@ -131,7 +131,7 @@ This section describes how to set up a "local" Jenkins host which is triggered b
   make: Leaving directory '/home/build'
   Successfully terminated!!
   ```
-  <b>Dockcross issues</b>
+  <b>Dockcross issues</b><br>
   The following error occurred during the build in Jenkins, due to the issue of running Dockcross using the Docker Toolbox within a Unix container.
   ```
   bash-4.4# ./dockcross cmake --help
