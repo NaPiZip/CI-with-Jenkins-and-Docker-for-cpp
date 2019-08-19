@@ -127,6 +127,15 @@ This section describes how to set up a "local" Jenkins host which is triggered b
   == Using MXE runresult: /usr/src/mxe/usr/share/cmake/modules/TryRunResults.cmake
 
   ...
+  17/21 Test #17: PathExists.singleTest ..............   Passed    1.36 sec
+        Start 18: TreeToLinkedList.singleTest
+  18/21 Test #18: TreeToLinkedList.singleTest ........   Passed    1.37 sec
+        Start 19: FindPaht.singleTest
+  19/21 Test #19: FindPaht.singleTest ................   Passed    1.37 sec
+        Start 20: cGraphTest.setup
+  20/21 Test #20: cGraphTest.setup ...................   Passed    1.37 sec
+        Start 21: cGraphTest.Dijkstras_algo
+  21/21 Test #21: cGraphTest.Dijkstras_algo ..........   Passed    1.38 sec
 
   100% tests passed, 0 tests failed out of 21
 
