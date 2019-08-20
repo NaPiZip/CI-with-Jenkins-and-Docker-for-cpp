@@ -103,6 +103,7 @@ This section describes how to set up a "local" Jenkins host which is triggered b
   ```
 4. Configure the Jenkins host according to the [Post-installation setup wizard](https://jenkins.io/doc/book/installing#setup-wizard). The following plugins are important:
   - git:3.12.0
+  - xUnit:2.2.5
 
 5. Try running the `build_full.sh` script in within the Jenkins Docker image:
   ```
@@ -225,6 +226,10 @@ Then run the following command in the container:
 $ chmod 777 /var/run/docker.sock
 
 ```
+## Report generation and publishing
+I have to figure out how to create a report using Ctest and the xUnit plugin.
+https://cmake.org/cmake-tutorial/#s3
+https://docs.nersc.gov/services/cdash/with_cmake/
 
 ## Creating a custom dockcross container
 TBD. Might be added.
