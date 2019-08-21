@@ -56,7 +56,7 @@ else
   echo "Running build script"
   ./dockcross_sh -a "$ADDITIONAL_ARGS" cmake -H. -Bbuild "-GUnix Makefiles"
   ./dockcross_sh -a "$ADDITIONAL_ARGS" make -Cbuild
-  ./dockcross_sh -a "$ADDITIONAL_ARGS" make test -Cbuild
+  ./dockcross_sh -a "$ADDITIONAL_ARGS" cmake -E chdir build ctest --no-compress-output -T TestResults
 fi
 
 echo "Successfully terminated!!"
