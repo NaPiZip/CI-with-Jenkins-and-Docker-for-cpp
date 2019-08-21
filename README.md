@@ -101,9 +101,11 @@ This section describes how to set up a "local" Jenkins host which is triggered b
     -v /var/run/docker.sock:/var/run/docker.sock \
     jenkins
   ```
-4. Configure the Jenkins host according to the [Post-installation setup wizard](https://jenkins.io/doc/book/installing#setup-wizard). The following plugins are important:
+4. Configure the Jenkins host according to the [Post-installation setup wizard](https://jenkins.io/doc/book/installing#setup-wizard). The following plugins are important for test visualization purposes:
   - git:3.12.0
-  - xUnit:2.2.5
+  - xunit:2.3.5
+  - test-results-analyzer:0.3.5
+  - modernstatus:1.2
 
 5. Try running the `build_full.sh` script in within the Jenkins Docker image:
   ```
