@@ -1,6 +1,13 @@
 pipeline {
     agent any
     stages {
+        stage('pre_build')
+        {
+            steps {
+                // dealing with permission denied error for accessing the socket
+                sh 'chmod 777 /var/run/docker.sock'
+            }
+        }
         stage('build') {
             steps {
                 sh "./build_full.sh"
