@@ -1,8 +1,6 @@
 pipeline {
     agent any
     stages {
-        env.BUILD_DISPLAY_NAME='jenkins-${JOB_NAME}-${BUILD_NUMBER}'
-
         stage('pre_build')
         {
             steps {
@@ -11,13 +9,17 @@ pipeline {
             }
         }
         stage('build') {
+            environment {
+                 BUILD_DISPLAY_NAME='Build No.:-${BUILD_NUMBER}'
+                 JOB_NAME='CI-with-jenkins-and-docker-for-cpp'
+            }
             steps {
                 sh "./build_full.sh"
             }
         }
     }
     post {
-            success{
+            success {
                 xunit(
                   [CTest(deleteOutputFiles: true,
                         failIfNotNew: true,
@@ -25,6 +27,9 @@ pipeline {
                         skipNoTestFiles: false,
                         stopProcessingIfError: true)]
                      )
-        }
+            }
+            always {
+              cleanWs()
+            }
     }
 }
