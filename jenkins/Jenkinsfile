@@ -17,9 +17,8 @@ pipeline {
                 sh "./build_full.sh"
             }
         }
-    }
-    post {
-            success {
+        stage('gen_report') {
+            steps {
                 xunit(
                   [CTest(deleteOutputFiles: true,
                         failIfNotNew: true,
@@ -28,8 +27,11 @@ pipeline {
                         stopProcessingIfError: true)]
                      )
             }
-            always {
-              cleanWs()
-            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
     }
 }
