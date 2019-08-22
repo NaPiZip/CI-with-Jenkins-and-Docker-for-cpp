@@ -1,6 +1,8 @@
 pipeline {
     agent any
     stages {
+        whitEnv(['BUILD_DISPLAY_NAME=jenkins-${JOB_NAME}-${BUILD_NUMBER}'])
+
         stage('pre_build')
         {
             steps {
@@ -15,7 +17,7 @@ pipeline {
         }
     }
     post {
-            always{
+            success{
                 xunit(
                   [CTest(deleteOutputFiles: true,
                         failIfNotNew: true,
