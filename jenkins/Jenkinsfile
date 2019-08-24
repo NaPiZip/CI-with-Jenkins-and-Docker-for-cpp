@@ -8,11 +8,15 @@ pipeline {
                 sh 'sudo chmod 777 /var/run/docker.sock'
             }
         }
-        stage('build') {
-            environment {
-                 BUILD_DISPLAY_NAME='Build No.:-${BUILD_NUMBER}'
-                 JOB_NAME='CI-with-jenkins-and-docker-for-cpp'
+        stage('set_vars') {
+            steps {
+                script {
+                  currentBuild.displayName = "Build No.:${BUILD_NUMBER}"
+                  currentBuild.description = 'CI-with-jenkins-and-docker-for-cpp'
+                }
             }
+        }
+        stage('build') {
             steps {
                 sh "./build_full.sh"
             }
