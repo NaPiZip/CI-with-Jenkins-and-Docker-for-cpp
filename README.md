@@ -237,7 +237,9 @@ Here are some example images showing the Jenkins server up and running on the ho
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp/master/images/Project_screen.JPG" alt="Project view"/></p>
-And here a image of the test results view showing the overall status of all builds, as well as a history. It is also possible to show individual test results by expanding the root element.
+
+And here a image of the test results view showing the overall status of all builds, as well as a history. It is also possible to show individual test results by expanding the root element.<br>
+
 <p align="center">
 <img src="https://raw.githubusercontent.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp/master/images/Test_results_view.JPG" alt="Test results view"/></p>
 
