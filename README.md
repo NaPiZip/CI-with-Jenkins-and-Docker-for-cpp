@@ -39,7 +39,7 @@ We will use the following Docker images:
 *Note:<br>
 We are using an adapted version of the Jenkins Docker image, since we need to issue Docker commands within Jenkins and due to the way Dockcross is working we cannot use the Jenkins docker plugins. This is related to the fact that we are not starting a container and running build commands within the running container. Instead we are just issuing a single run command which terminates the running container right after the build!*
 
-## System Architecture
+## System architecture
 The following image displays the system architecture, showing the host PC, which is using the Docker Toolbox. The Docker Toolbox then runs an image of a Jenkins container, the configuration on the Jenkins container clones the GitHub repository and constantly monitors it for changes. The Jenkin image then builds the source code and runs all unit tests with the help of Dockcross.
 
 <p align="center">
@@ -214,7 +214,27 @@ This section describes how to set up a "local" Jenkins host which is triggered b
   ```
   The section does the copying as well as changes of ownership. All the patches are found in `build_full.sh`.
 
-## Aditional errors and debugging
+6. Configuration of the Jenkins project. This step is pretty straight forward, that's the reason why I am just adding a short list of steps:
+  - Create a new `Pipeline` whit a representative name.
+  - Add a description
+  - Set the git repository url in the `General` section as followed:
+  ```
+  https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git
+  ```
+  - Set the `Build Triggers` to `Poll SCM` and enter the desired poll interval. For example:
+  ```
+  # Every five minutes (MINUTE HOUR DOM MONTH DOW)
+  5 * * * *
+  ```
+  There is also the option using a GitHub hook, but since we are running a local Jenkis container without a public IP Address, I decided to poll the SCM.
+  - Select the `pipeline script from SCM` in the `Pipeline` section.
+    - SCM: `Git`
+    - Repository URL: `https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git`
+    - Additional Behaviors: `Advanced sub-module behaviors` with `Recursively update submodules`
+    - Script Path: `jenkins/Jenkins`
+
+
+## Additional errors and debugging
 If docker is causing a permission error:
 ```
 docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.26/containers/create: dial unix /var/run/docker.sock: connect: permission denied.
@@ -224,14 +244,28 @@ Then run the following command in the container:
 $ chmod 777 /var/run/docker.sock
 
 ```
-## Report generation and publishing
-I have to figure out how to create a report using Ctest and the xUnit plugin.
-https://cmake.org/cmake-tutorial/#s3
-https://docs.nersc.gov/services/cdash/with_cmake/
-https://issues.jenkins-ci.org/browse/JENKINS-41239
+## Example images
+Here are some example images showing the Jenkins server up and running on the host.
 
-## Creating a custom dockcross container
-TBD. Might be added.
+<p align="center">
+<img src="https://raw.githubusercontent.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp/master/images/Project_screen.JPG" alt="Project view"/></p>
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp/master/images/Test_results_view.JPG" alt="Test results view"/></p>
+
+## Helpful links
+The following general links helped me to get everything set up or when I had road blocks.
+- [Using CTest in CMake](https://cmake.org/cmake-tutorial/#s3)
+- [CTest advanced configuration of the report](https://docs.nersc.gov/services/cdash/with_cmake/)
+- [Jenkins pipeline order of execution help](https://issues.jenkins-ci.org/browse/JENKINS-41239)
+- [How to set the build name in Jenkins](https://stackoverflow.com/questions/53451345/how-to-set-build-name-in-jenkins-job-dsl)
+
+## Future topics
+Depending on if I feel I have time I will try to cover the following topics:
+- Creating a custom Dockcross container, containing a Clang compiler.
+- Running additional profiling tools, e.g. Clang-Tidy, CppCheck etc. ...
+- Moving the setup to an Raspberry.
+- Moving the setup to AWS or Google Cloud.
 
 ## Contributing
 To get started with contributing to my GitHub repository, please contact me [Slack](https://join.slack.com/t/napi-friends/shared_invite/enQtNDg3OTg5NDc1NzUxLWU1MWNhNmY3ZTVmY2FkMDM1ODg1MWNlMDIyYTk1OTg4OThhYzgyNDc3ZmE5NzM1ZTM2ZDQwZGI0ZjU2M2JlNDU).
