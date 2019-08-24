@@ -215,7 +215,7 @@ This section describes how to set up a "local" Jenkins host which is triggered b
 
 6. Configuration of the Jenkins project. This step is pretty straight forward, that's the reason why I am just adding a short list of steps:
     - Create a new `Pipeline` whit a representative name.
-    - Add a description
+    - Add a description.
     - Set the git repository url in the `General` section as followed:
     ```
     https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git
@@ -227,28 +227,17 @@ This section describes how to set up a "local" Jenkins host which is triggered b
     ```
     There is also the option using a GitHub hook, but since we are running a local Jenkis container without a public IP Address, I decided to poll the SCM.
     - Select the `pipeline script from SCM` in the `Pipeline` section.
-      - SCM: `Git`
-      - Repository URL: `https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git`
-      - Additional Behaviors: `Advanced sub-module behaviors` with `Recursively update submodules`
-      - Script Path: `jenkins/Jenkins`
+      - SCM: `Git`.
+      - Repository URL: `https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git`.
+      - Additional Behaviors: `Advanced sub-module behaviors` with `Recursively update submodules`.
+      - Script Path: `jenkins/Jenkins`.
 
-
-## Additional errors and debugging
-If docker is causing a permission error:
-```
-docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.26/containers/create: dial unix /var/run/docker.sock: connect: permission denied.
-```
-Then run the following command in the container:
-```
-$ chmod 777 /var/run/docker.sock
-
-```
 ## Example images
 Here are some example images showing the Jenkins server up and running on the host.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp/master/images/Project_screen.JPG" alt="Project view"/></p>
-
+And here a image of the test results view showing the overall status of all builds, as well as a history. It is also possible to show individual test results by expanding the root element.
 <p align="center">
 <img src="https://raw.githubusercontent.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp/master/images/Test_results_view.JPG" alt="Test results view"/></p>
 
