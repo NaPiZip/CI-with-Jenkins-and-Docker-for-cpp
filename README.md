@@ -99,10 +99,10 @@ This section describes how to set up a "local" Jenkins host which is triggered b
     jenkins
   ```
 4. Configure the Jenkins host according to the [Post-installation setup wizard](https://jenkins.io/doc/book/installing#setup-wizard). The following plugins are important, e.g. for test visualization purposes or a better look of the dashboard in Jenkins:
-  - git:3.12.0
-  - xunit:2.3.5
-  - test-results-analyzer:0.3.5
-  - modernstatus:1.2
+    - git:3.12.0
+    - xunit:2.3.5
+    - test-results-analyzer:0.3.5
+    - modernstatus:1.2
 
 5. Try running the `build_full.sh` script in within the Jenkins Docker image. Don't forget to mount your local directory containing the project files `-v /e/080_Github/CI-with-jenkins-and-docker-for-cpp/:/home`, since we want to test the correct functionality before setting up a Jenkins project:
   ```
@@ -210,28 +210,27 @@ This section describes how to set up a "local" Jenkins host which is triggered b
      cp -r /root/* $HOME/
      chown -R $BUILDER_UID:$BUILDER_GID $HOME
      ...
-
   ```
   The section does the copying as well as changes of ownership. All the patches are found in `build_full.sh`.
 
 6. Configuration of the Jenkins project. This step is pretty straight forward, that's the reason why I am just adding a short list of steps:
-  - Create a new `Pipeline` whit a representative name.
-  - Add a description
-  - Set the git repository url in the `General` section as followed:
-  ```
-  https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git
-  ```
-  - Set the `Build Triggers` to `Poll SCM` and enter the desired poll interval. For example:
-  ```
-  # Every five minutes (MINUTE HOUR DOM MONTH DOW)
-  5 * * * *
-  ```
-  There is also the option using a GitHub hook, but since we are running a local Jenkis container without a public IP Address, I decided to poll the SCM.
-  - Select the `pipeline script from SCM` in the `Pipeline` section.
-    - SCM: `Git`
-    - Repository URL: `https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git`
-    - Additional Behaviors: `Advanced sub-module behaviors` with `Recursively update submodules`
-    - Script Path: `jenkins/Jenkins`
+    - Create a new `Pipeline` whit a representative name.
+    - Add a description
+    - Set the git repository url in the `General` section as followed:
+    ```
+    https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git
+    ```
+    - Set the `Build Triggers` to `Poll SCM` and enter the desired poll interval. For example:
+    ```
+    # Every five minutes (MINUTE HOUR DOM MONTH DOW)
+    5 * * * *
+    ```
+    There is also the option using a GitHub hook, but since we are running a local Jenkis container without a public IP Address, I decided to poll the SCM.
+    - Select the `pipeline script from SCM` in the `Pipeline` section.
+      - SCM: `Git`
+      - Repository URL: `https://github.com/NaPiZip/CI-with-jenkins-and-docker-for-cpp.git`
+      - Additional Behaviors: `Advanced sub-module behaviors` with `Recursively update submodules`
+      - Script Path: `jenkins/Jenkins`
 
 
 ## Additional errors and debugging
