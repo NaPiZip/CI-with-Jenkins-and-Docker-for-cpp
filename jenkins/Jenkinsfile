@@ -1,19 +1,19 @@
 pipeline {
     agent any
     stages {
+        stage('set_vars') {
+            steps {
+                script {
+                  currentBuild.displayName = "Build No.:${BUILD_NUMBER}"
+                  currentBuild.description = "CI-with-jenkins-and-docker-for-cpp"
+                }
+            }
+        }
         stage('pre_build')
         {
             steps {
                 // dealing with permission denied error for accessing the socket
                 sh 'sudo chmod 777 /var/run/docker.sock'
-            }
-        }
-        stage('set_vars') {
-            steps {
-                script {
-                  currentBuild.displayName = "Build No.:${BUILD_NUMBER}"
-                  currentBuild.description = 'CI-with-jenkins-and-docker-for-cpp'
-                }
             }
         }
         stage('build') {
